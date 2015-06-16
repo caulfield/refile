@@ -34,7 +34,6 @@ Sponsored by:
 Add the gem:
 
 ``` ruby
-gem "mini_magick"
 gem "refile", require: "refile/rails"
 gem "refile-mini_magick"
 ```
@@ -236,6 +235,7 @@ integrate with any ORM, so building your own should not be too difficult. Some
 integrations are already available via gems:
 
 * [refile-sequel](https://github.com/refile/refile-sequel)
+* [refile-mongoid](https://github.com/krettan/refile-mongoid)
 
 ### Pure Ruby classes
 
@@ -654,6 +654,19 @@ it:
 ``` ruby
 def post_params
   params.require(:post).permit(images_files: [])
+end
+```
+
+When editing a record with `accepts_attachments_for`, the default behaviour is
+to replace the entire list of attachments when new attachments are uploaded. It
+is also possible to append the new attachments to the list of attachments instead
+so that older attachments are kept. To enable this, set the `append` option to
+`true`.
+
+``` ruby
+class Post < ActiveRecord::Base
+  has_many :images, dependent: :destroy
+  accepts_attachments_for :images, append: true
 end
 ```
 
